@@ -4,11 +4,16 @@ import com.example.todolist.Model.AllLists.AllLists;
 import com.example.todolist.Model.AllTasks.AllTasks;
 import com.example.todolist.Model.CreateNewList.CreateList;
 import com.example.todolist.Model.CreateNewList.PostList;
+import com.example.todolist.Model.CreateNewTask.CreateTask;
+import com.example.todolist.Model.CreateNewTask.PostTask;
 import com.example.todolist.Model.DelList.DelList;
 import com.example.todolist.Model.DelList.DelListResponse;
+import com.example.todolist.Model.DelTask.DelTask;
+import com.example.todolist.Model.DelTask.DelTaskResponse;
 import com.example.todolist.Model.ListId;
 import com.example.todolist.Model.Login.Login;
 import com.example.todolist.Model.Login.LoginRes;
+import com.example.todolist.Model.TaskId;
 
 import java.util.Map;
 
@@ -27,9 +32,6 @@ public interface ApiRequest {
     @GET("/allLists")
     Call<AllLists> getAllLists();
 
-    @GET("/list/{listId}")
-    Call<AllTasks> getAllTasks(@Path("listId") Integer id);
-
     @PUT("/list")
     Call<AllLists> getUpdatedLists(@Body ListId data);
 
@@ -41,4 +43,18 @@ public interface ApiRequest {
 
     @HTTP(method = "DELETE", path = "/list", hasBody = true)
     Call<DelListResponse> deleteList(@Body DelList listId);
+
+    // ---- for tasks -----
+
+    @GET("/list/{listId}")
+    Call<AllTasks> getAllTasks(@Path("listId") Integer id);
+
+    @POST("/task")
+    Call<PostTask> createTask(@Body CreateTask data);
+
+    @PUT("/task")
+    Call<AllTasks> getUpdatedTasks(@Body TaskId data);
+
+    @HTTP(method = "DELETE", path = "/task", hasBody = true)
+    Call<DelTaskResponse> deleteList(@Body DelTask taskId);
 }

@@ -9,9 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.todolist.Adapter.AllTaskAdapter;
 import com.example.todolist.Class.ApiRequest;
+import com.example.todolist.Class.CustomDialogAddNewList;
+import com.example.todolist.Class.CustomDialogAddNewTask;
 import com.example.todolist.Class.RetrofitAdapter;
 import com.example.todolist.Model.AllTasks.AllTasks;
 import com.example.todolist.Model.ListId;
@@ -33,7 +38,9 @@ public class TaskScreenActivity extends AppCompatActivity {
 
     Context context = this;
     RecyclerView recyclerView;
-    Integer ID;
+    TextView pageTitle;
+    ImageView addTask;
+    public Integer ID;
     Bundle extras;
     AllTasks allTasks;
     private String TAG = "TaskScreenActivity";
@@ -47,14 +54,17 @@ public class TaskScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_screen);
 
         recyclerView = findViewById(R.id.rv_task_screen);
+        pageTitle = findViewById(R.id.tv_task_screen_heading);
+        addTask = findViewById(R.id.iv_task_screen);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         extras = getIntent().getExtras();
 
         if(extras != null){
             ID = extras.getInt("listId");
+            pageTitle.setText(extras.getString("list_title"));
         }
-        Log.e("",getIntent().getExtras().toString());
+        setImageViewListener();
         getFeedDetails();
     }
 
@@ -81,5 +91,19 @@ public class TaskScreenActivity extends AppCompatActivity {
             Log.e(TAG, "something went wrong");
             e.printStackTrace();
         }
+    }
+
+    private void setImageViewListener(){
+        addTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomDialogAddNewTask dialog = new CustomDialogAddNewTask(TaskScreenActivity.this);
+                dialog.show();
+            }
+        });
+    }
+
+    public void loadAgain(){
+        getFeedDetails();
     }
 }

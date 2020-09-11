@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -42,7 +43,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // checking if successful login exists before or not
+//        SharedPreferences.Editor memes = PreferenceManager.getDefaultSharedPreferences(context).edit();
+//        memes.remove(PREF_COOKIES).apply();
+//        memes.commit();
+//        checking if successful login exists before or not
         HashSet<String> preferences = (HashSet<String>) PreferenceManager.getDefaultSharedPreferences(context).getStringSet(PREF_COOKIES, new HashSet<String>());
         if(preferences != null){
             startActivity(new Intent(this, ListScreenActivity.class));
