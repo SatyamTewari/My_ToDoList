@@ -123,9 +123,11 @@ public class TaskScreenActivity extends AppCompatActivity {
 
     public void visibleProgressBar(){
         progressBar.setVisibility(View.VISIBLE);
+        Log.e("visible progress bar","yess");
     }
 
     public void hideProgressBar(){
         progressBar.setVisibility(View.GONE);
+        Log.e("hide progress bar","yess");
     }
 }
