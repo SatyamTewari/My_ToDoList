@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.todolist.Adapter.AllTaskAdapter;
 import com.example.todolist.Class.ApiRequest;
@@ -40,6 +42,7 @@ public class TaskScreenActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     TextView pageTitle;
     ImageView addTask;
+    LinearLayout progressBar;
     public Integer ID;
     Bundle extras;
     AllTasks allTasks;
@@ -56,6 +59,7 @@ public class TaskScreenActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rv_task_screen);
         pageTitle = findViewById(R.id.tv_task_screen_heading);
         addTask = findViewById(R.id.iv_task_screen);
+        progressBar = findViewById(R.id.task_screen_progress_bar);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         extras = getIntent().getExtras();
@@ -69,6 +73,7 @@ public class TaskScreenActivity extends AppCompatActivity {
     }
 
     private void getFeedDetails(){
+        visibleProgressBar();
         try{
         Call<AllTasks> call = retrofitCall.getAllTasks(ID);
         call.enqueue(new Callback<AllTasks>() {
@@ -79,17 +84,26 @@ public class TaskScreenActivity extends AppCompatActivity {
                     AllTaskAdapter allTaskAdapter = new AllTaskAdapter(context, allTasks);
                     recyclerView.setAdapter(allTaskAdapter);
                 }
+                else{
+                    Toast.makeText(TaskScreenActivity.this,"something went wrong", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
             public void onFailure(Call<AllTasks> call, Throwable t) {
                 Log.e(TAG, "failed response - "+t.getMessage());
+                Toast.makeText(TaskScreenActivity.this,"something went wrong", Toast.LENGTH_LONG).show();
             }
         });
         }
         catch(Exception e){
             Log.e(TAG, "something went wrong");
             e.printStackTrace();
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(TaskScreenActivity.this,"something went wrong", Toast.LENGTH_LONG).show();
+        }
+        finally {
+            hideProgressBar();
         }
     }
 
@@ -105,5 +119,13 @@ public class TaskScreenActivity extends AppCompatActivity {
 
     public void loadAgain(){
         getFeedDetails();
+    }
+
+    public void visibleProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar(){
+        progressBar.setVisibility(View.GONE);
     }
 }

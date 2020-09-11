@@ -41,6 +41,9 @@ public interface ApiRequest {
     @POST("/login")
     Call<LoginRes> login(@Body Login cred);
 
+    @POST("/register")
+    Call<LoginRes> register(@Body Login cred);
+
     @HTTP(method = "DELETE", path = "/list", hasBody = true)
     Call<DelListResponse> deleteList(@Body DelList listId);
 

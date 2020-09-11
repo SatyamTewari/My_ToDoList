@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.todolist.Class.ApiRequest;
 import com.example.todolist.Class.RetrofitAdapter;
@@ -43,15 +44,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        SharedPreferences.Editor memes = PreferenceManager.getDefaultSharedPreferences(context).edit();
-//        memes.remove(PREF_COOKIES).apply();
-//        memes.commit();
+        SharedPreferences.Editor memes = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        memes.remove(PREF_COOKIES).apply();
+        memes.commit();
+
 //        checking if successful login exists before or not
-        HashSet<String> preferences = (HashSet<String>) PreferenceManager.getDefaultSharedPreferences(context).getStringSet(PREF_COOKIES, new HashSet<String>());
-        if(preferences != null){
-            startActivity(new Intent(this, ListScreenActivity.class));
-            finish();
-        }
+//        HashSet<String> preferences = (HashSet<String>) PreferenceManager.getDefaultSharedPreferences(context).getStringSet(PREF_COOKIES, new HashSet<String>());
+//        if(preferences != null){
+//            startActivity(new Intent(this, ListScreenActivity.class));
+//            finish();
+//        }
 
         username = findViewById(R.id.et_login_username);
         password = findViewById(R.id.et_login_password);
@@ -86,12 +88,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if(response.isSuccessful()){
                     Log.e("cookie test 1", response.body().getToken());
                     startActivity(new Intent(context, ListScreenActivity.class));
+                    finish();
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "something went wrong", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginRes> call, Throwable t) {
-
+                Toast.makeText(LoginActivity.this, "something went wrong", Toast.LENGTH_LONG).show();
             }
         });
     }

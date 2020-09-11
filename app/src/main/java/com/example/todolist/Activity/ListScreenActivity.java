@@ -6,11 +6,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.todolist.Adapter.AllListAdapter;
 import com.example.todolist.Class.ApiRequest;
@@ -31,6 +34,7 @@ public class ListScreenActivity extends AppCompatActivity {
     private String TAG = "ListScreenActivity";
     RecyclerView recyclerView;
     ImageView imageView;
+    LinearLayout progressBar;
     AllLists allLists;
     AllListAdapter allListAdapter;
     Context context = this;
@@ -45,6 +49,7 @@ public class ListScreenActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.rv_list_screen);
         imageView = findViewById(R.id.iv_list_screen);
+        progressBar = findViewById(R.id.list_screen_progress_bar);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         setImageViewListener();
@@ -53,6 +58,7 @@ public class ListScreenActivity extends AppCompatActivity {
 
     private void getFeedDetails(){
         try{
+            visibleProgressBar();
             Call<AllLists> call = retrofitCall.getAllLists();
             call.enqueue(new Callback<AllLists>() {
                 @Override
@@ -60,21 +66,26 @@ public class ListScreenActivity extends AppCompatActivity {
                     if(response.isSuccessful()){
                         allLists = response.body();
                         Log.e(TAG, "sucessful Response - "+allLists.getData().size());
-//                        allListAdapter.setAllLists(allLists);
-//                        allListAdapter.notifyDataSetChanged();
+
                         allListAdapter = new AllListAdapter(context, allLists);
                         recyclerView.setAdapter(allListAdapter);
+                    }
+                    else{
+                        Toast.makeText(ListScreenActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<AllLists> call, Throwable t) {
-
+                public void onFailure(Call<AllLists> c, Throwable t) {
+                    Toast.makeText(ListScreenActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
                 }
             });
         }
         catch (Exception e){
             Log.e(TAG,e.toString());
+        }
+        finally {
+            hideProgresBar();
         }
     }
 
@@ -90,6 +101,14 @@ public class ListScreenActivity extends AppCompatActivity {
 
     public void loadAgain(){
         getFeedDetails();
+    }
+
+    public void visibleProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgresBar(){
+        progressBar.setVisibility(View.GONE);
     }
 
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,6 +99,7 @@ public class AllListAdapter extends RecyclerView.Adapter<AllListAdapter.MyViewHo
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    ((ListScreenActivity)context).visibleProgressBar();
                     DelList delList = new DelList();
                     delList.setListId(allLists.getData().get(getAdapterPosition()).getId());
                     try{
@@ -110,16 +112,24 @@ public class AllListAdapter extends RecyclerView.Adapter<AllListAdapter.MyViewHo
                                 Toast.makeText(context, "Successfully deleted List", Toast.LENGTH_LONG).show();
                                 allLists.getData().remove(getAdapterPosition());
                                 notifyDataSetChanged();
+                                ((ListScreenActivity)context).hideProgresBar();
+                            }
+                            else{
+                                Toast.makeText(context, "Successfully deleted List", Toast.LENGTH_LONG).show();
+                                ((ListScreenActivity)context).hideProgresBar();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<DelListResponse> call, Throwable t) {
                             Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
+                            ((ListScreenActivity)context).hideProgresBar();
+
                         }
                     });
                     }catch (Exception e){
                         e.printStackTrace();
+                        ((ListScreenActivity)context).hideProgresBar();
                     }
                 }
             });
@@ -127,25 +137,35 @@ public class AllListAdapter extends RecyclerView.Adapter<AllListAdapter.MyViewHo
             done.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //((ListScreenActivity)context).getListPutCall(getAdapterPosition());
+                    ((ListScreenActivity)context).visibleProgressBar();
                     ListId data = new ListId(allLists.getData().get(getAdapterPosition()).getId());
                     try {
                         Call<AllLists> call = retrofitCall.getUpdatedLists(data);
                         call.enqueue(new Callback<AllLists>() {
                             @Override
                             public void onResponse(Call<AllLists> call, Response<AllLists> response) {
-                                allLists = response.body();
-                                notifyDataSetChanged();
+                                if(response.isSuccessful()){
+                                    allLists = response.body();
+                                    notifyDataSetChanged();
+                                    ((ListScreenActivity)context).hideProgresBar();
+                                }
+                                else{
+                                    ((ListScreenActivity)context).hideProgresBar();
+                                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
+                                }
                             }
 
                             @Override
                             public void onFailure(Call<AllLists> call, Throwable t) {
+                                ((ListScreenActivity)context).hideProgresBar();
                                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_LONG).show();
+
                             }
                         });
                     }
                     catch (Exception e){
                         e.printStackTrace();
+                        ((ListScreenActivity)context).hideProgresBar();
                     }
                 }
             });
