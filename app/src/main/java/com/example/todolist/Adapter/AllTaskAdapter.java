@@ -79,6 +79,7 @@ public class AllTaskAdapter extends RecyclerView.Adapter<AllTaskAdapter.MyViewHo
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    ((TaskScreenActivity)context).visibleProgressBar();
                     DelTask delList = new DelTask();
                     delList.setTaskId(allTasks.getData().get(getAdapterPosition()).getId());
                     try{
@@ -102,13 +103,16 @@ public class AllTaskAdapter extends RecyclerView.Adapter<AllTaskAdapter.MyViewHo
                     }catch (Exception e){
                         e.printStackTrace();
                     }
+                    finally {
+                        ((TaskScreenActivity)context).hideProgressBar();
+                    }
                 }
             });
 
             done.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //((ListScreenActivity)context).getListPutCall(getAdapterPosition());
+                    ((TaskScreenActivity)context).visibleProgressBar();
                     TaskId data = new TaskId(allTasks.getData().get(getAdapterPosition()).getId());
                     try {
                         Call<AllTasks> call = retrofitCall.getUpdatedTasks(data);
@@ -127,6 +131,9 @@ public class AllTaskAdapter extends RecyclerView.Adapter<AllTaskAdapter.MyViewHo
                     }
                     catch (Exception e){
                         e.printStackTrace();
+                    }
+                    finally {
+                        ((TaskScreenActivity)context).hideProgressBar();
                     }
                 }
             });
